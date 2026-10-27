@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distributed Snapshot Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Distributed Snapshot Simulator</h1>
+    <p>Chandy–Lamport Algorithm | FIFO Channels</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>System Overview</h2>
+      <p>Simulate three distributed processes connected by FIFO channels.</p>
+      <div class="stats">
+        <div><span>Processes</span><strong>3</strong></div>
+        <div><span>Algorithm</span><strong>Chandy–Lamport</strong></div>
+        <div><span>Channel Type</span><strong>FIFO</strong></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Distributed System</h2>
+      <div class="network">
+        <div class="process" id="p0">
+          <h3>Process P1</h3>
+          <p>Local state: <b id="s0">10</b></p>
+          <span id="status0">Not recorded</span>
+        </div>
+        <div class="process" id="p1">
+          <h3>Process P2</h3>
+          <p>Local state: <b id="s1">20</b></p>
+          <span id="status1">Not recorded</span>
+        </div>
+        <div class="process" id="p2">
+          <h3>Process P3</h3>
+          <p>Local state: <b id="s2">30</b></p>
+          <span id="status2">Not recorded</span>
+        </div>
+      </div>
+
+      <h3>FIFO Channels</h3>
+      <div class="channels">
+        <div><b>P1 → P2</b><p id="c01">Messages: [A]</p></div>
+        <div><b>P2 → P3</b><p id="c12">Messages: [B]</p></div>
+        <div><b>P3 → P1</b><p id="c20">Messages: []</p></div>
+      </div>
+
+      <div class="buttons">
+        <button id="startBtn">Start Snapshot</button>
+        <button id="stepBtn" class="secondary">Next Step</button>
+        <button id="resetBtn" class="danger">Reset</button>
+      </div>
+      <p id="message" role="status">Ready to start the snapshot algorithm.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Snapshot Results</h2>
+      <div id="results">
+        <p>Click Start Snapshot to begin recording the global state.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Algorithm Log</h2>
+      <ol id="log">
+        <li>Waiting to begin.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>Distributed Systems Mini Project</footer>
+  <script src="script.js"></script>
+</body>
+</html>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f5fa;
+  color: #1e293b;
+}
+
+header {
+  background: #152b50;
+  color: white;
+  text-align: center;
+  padding: 28px 15px;
+}
+
+header h1 {
+  margin: 0 0 10px;
+}
+
+header p {
+  margin: 0;
+  color: #d7e5ff;
+}
+
+main {
+  width: min(1000px, 94%);
+  margin: 25px auto;
+}
+
+.panel {
+  background: white;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 12px #152b5010;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stats div,
+.channels div {
+  background: #edf3ff;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.stats span,
+.stats strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.network {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.process {
+  border: 2px solid #a8b7ce;
+  border-radius: 10px;
+  text-align: center;
+  padding: 16px 8px;
+  background: #f8fafc;
+}
+
+.process.recorded {
+  border-color: #168451;
+  background: #e7f8ef;
+}
+
+.process h3 {
+  margin-top: 0;
+}
+
+.process span {
+  font-size: 13px;
+}
+
+.channels {
+  display: grid;
+  gap: 10px;
+}
+
+.channels p {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+button {
+  border: 0;
+  border-radius: 7px;
+  background: #245ac5;
+  color: white;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  opacity: 0.86;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: #475569;
+}
+
+.danger {
+  background: #c03945;
+}
+
+#message {
+  background: #f1f5f9;
+  padding: 12px;
+  border-radius: 7px;
+}
+
+#results {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+#log li {
+  margin: 10px 0;
+}
+
+footer {
+  text-align: center;
+  padding: 22px;
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+  .network {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+}
+
+const initialStates = [10, 20, 30];
+
+const initialChannels = [
+  { from: 0, to: 1, messages: ["A"] },
+  { from: 1, to: 2, messages: ["B"] },
+  { from: 2, to: 0, messages: [] }
+];
+
+let states;
+let channels;
+let snapshots;
+let recorded;
+let recording;
+let logMessages;
+let stepNumber;
+
+const $ = id => document.getElementById(id);
+
+function reset() {
+  states = [...initialStates];
+  channels = initialChannels.map(c => ({
+    ...c,
+    messages: [...c.messages]
+  }));
+
+  snapshots = [null, null, null];
+  recorded = [false, false, false];
+  recording = [false, false, false];
+  logMessages = [];
+  stepNumber = 0;
+
+  $("startBtn").disabled = false;
+  $("stepBtn").disabled = true;
+
+  addLog("System initialized. FIFO channels contain messages A and B.");
+  $("message").textContent =
+    "Ready. Start the snapshot from Process P1.";
+  render();
+}
+
+function addLog(text) {
+  logMessages.push(text);
+  $("log").innerHTML = logMessages
+    .map(item => `<li>${item}</li>`).join("");
+}
+
+function startSnapshot() {
+  if (stepNumber !== 0) return;
+
+  $("startBtn").disabled = true;
+  $("stepBtn").disabled = false;
+
+  recordProcess(0);
+  addLog("P1 records its local state and sends marker messages.");
+  $("message").textContent =
+    "P1 initiated the snapshot. Click Next Step to continue.";
+  stepNumber = 1;
+  render();
+}
+
+function recordProcess(index) {
+  if (recorded[index]) return;
+
+  recorded[index] = true;
+  recording[index] = true;
+
+  snapshots[index] = {
+    localState: states[index],
+    channels: {}
+  };
+
+  addLog(`P${index + 1} records local state ${states[index]}.`);
+
+  // Marker sent on every outgoing channel.
+  channels.forEach(channel => {
+    if (channel.from === index) {
+      channel.messages.push("MARKER");
+      addLog(
+        `Marker sent from P${index + 1} to P${channel.to + 1}.`
+      );
+    }
+  });
+}
+
+function nextStep() {
+  if (stepNumber === 0) return;
+
+  // Deliver one marker or application message per step.
+  const markerChannel = channels.find(channel =>
+    channel.messages[0] === "MARKER" &&
+    !recorded[channel.to]
+  );
+
+  if (markerChannel) {
+    const marker = markerChannel.messages.shift();
+    const receiver = markerChannel.to;
+
+    addLog(
+      `P${receiver + 1} receives marker from P${markerChannel.from + 1}.`
+    );
+
+    if (!recorded[receiver]) {
+      recordProcess(receiver);
+
+      // The channel on which the first marker arrived is empty
+      // in this simplified snapshot because the marker is excluded.
+      snapshots[receiver].channels[
+        `${markerChannel.from}->${receiver}`
+      ] = [];
+
+      // Record messages on other incoming channels until their markers.
+      channels.forEach(channel => {
+        if (channel.to === receiver && channel !== markerChannel) {
+          snapshots[receiver].channels[
+            `${channel.from}->${receiver}`
+          ] = [...channel.messages.filter(m => m !== "MARKER")];
+        }
+      });
+    }
+
+    // Stop recording an incoming channel when its marker arrives.
+    else {
+      const key = `${markerChannel.from}->${receiver}`;
+      if (snapshots[receiver]) {
+        snapshots[receiver].channels[key] = [];
+      }
+    }
+  } else {
+    // Deliver any remaining ordinary message in FIFO order.
+    const dataChannel = channels.find(channel =>
+      channel.messages.length &&
+      channel.messages[0] !== "MARKER"
+    );
+
+    if (dataChannel) {
+      const msg = dataChannel.messages.shift();
+      addLog(
+        `Message ${msg} delivered from P${dataChannel.from + 1} to P${dataChannel.to + 1}.`
+      );
+    }
+  }
+
+  stepNumber++;
+  render();
+
+  if (recorded.every(Boolean) &&
+      channels.every(c => !c.messages.includes("MARKER"))) {
+    finishSnapshot();
+  } else {
+    $("message").textContent =
+      "Step " + stepNumber + " completed. Continue to record the global state.";
+  }
+}
+
+function finishSnapshot() {
+  recording = [false, false, false];
+  $("stepBtn").disabled = true;
+  $("message").textContent =
+    "Snapshot recording completed. Review the captured local states and channel states.";
+  addLog("Snapshot recording finished for all three processes.");
+  render();
+}
+
+function render() {
+  states.forEach((state, i) => {
+    $("s" + i).textContent = state;
+    $("status" + i).textContent =
+      recorded[i] ? "State recorded" : "Not recorded";
+
+    $("p" + i).classList.toggle("recorded", recorded[i]);
+  });
+
+  channels.forEach((channel, i) => {
+    const labels = ["c01", "c12", "c20"];
+    $(labels[i]).textContent =
+      "Messages: [" + channel.messages.join(", ") + "]";
+  });
+
+  const results = $("results");
+
+  if (!recorded.some(Boolean)) {
+    results.innerHTML =
+      "<p>Click Start Snapshot to begin recording the global state.</p>";
+    return;
+  }
+
+  let html = "<h3>Recorded Local States</h3><ul>";
+
+  snapshots.forEach((snapshot, i) => {
+    if (snapshot) {
+      html += `<li><b>P${i + 1}:</b> Local state = ${snapshot.localState}</li>`;
+    }
+  });
+
+  html += "</ul><h3>Recorded Channel States</h3><ul>";
+
+  snapshots.forEach((snapshot, i) => {
+    if (snapshot) {
+      Object.entries(snapshot.channels).forEach(([channel, messages]) => {
+        html += `<li><b>P${i + 1}, channel ${channel}:</b> [${messages.join(", ")}]</li>`;
+      });
+    }
+  });
+
+  html += "</ul>";
+  results.innerHTML = html;
+}
+
+$("startBtn").addEventListener("click", startSnapshot);
+$("stepBtn").addEventListener("click", nextStep);
+$("resetBtn").addEventListener("click", reset);
+
+reset();
